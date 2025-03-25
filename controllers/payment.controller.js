@@ -9,14 +9,6 @@ exports.createOrder = async (req, res) => {
 	console.log(req.body);
 	const { courseId, amount } = req.body;
 	console.log("11", courseId, amount);
-
-	if (!courseId || !amount) {
-		return res.status(400).json({
-			success: false,
-			message: "course id or amount is required",
-		});
-	}
-
 	const options = {
 		amount: amount * 100, // Razorpay requires the amount in paise (i.e., multiplied by 100)
 		currency: "INR",
@@ -52,12 +44,12 @@ exports.veriFyPayment = async (req, res) => {
 		.replace(".", "")
 		.replace("T", "");
 	res.send("Paymnent verify");
-	// const { order_id, payment_id, signature } = req.body;
-	// const secret = process.env.RAZORPAY_KEY_SECRET;
-	// console.log("VERIFY", req.body);
-	// const hmac = crypto.createHmac("sha256", secret);
-	// hmac.update(order_id + "|" + payment_id);
-	// const generateSignature = hmac.digest("hex");
+	const { order_id, payment_id, signature } = req.body;
+	const secret = process.env.RAZORPAY_KEY_SECRET;
+	console.log("VERIFY", req.body);
+	const hmac = crypto.createHmac("sha256", secret);
+	hmac.update(order_id + "|" + payment_id);
+	const generateSignature = hmac.digest("hex");
 
 	console.log("generateSignature", generateSignature);
 	console.log("signature", req);
